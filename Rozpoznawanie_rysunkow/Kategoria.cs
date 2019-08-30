@@ -38,7 +38,7 @@ namespace Rozpoznawanie_rysunkow
     }
     class OneDraw
     {
-        public Label Lbl{ get; set; }
+        public Label Lbl { get; set; }
         public Bitmap Bmp { get; set; }
         public double[] BrightPixels //jasność pikseli
         {

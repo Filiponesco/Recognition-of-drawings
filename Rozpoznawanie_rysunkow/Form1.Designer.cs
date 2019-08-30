@@ -52,14 +52,14 @@
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(334, 45);
+            this.listBox1.Location = new System.Drawing.Point(311, 41);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(482, 277);
+            this.listBox1.Size = new System.Drawing.Size(232, 290);
             this.listBox1.TabIndex = 1;
             // 
             // btnNaucz
             // 
-            this.btnNaucz.Location = new System.Drawing.Point(12, 12);
+            this.btnNaucz.Location = new System.Drawing.Point(313, 12);
             this.btnNaucz.Name = "btnNaucz";
             this.btnNaucz.Size = new System.Drawing.Size(75, 23);
             this.btnNaucz.TabIndex = 2;
@@ -69,7 +69,7 @@
             // 
             // btnZgadnij
             // 
-            this.btnZgadnij.Location = new System.Drawing.Point(174, 12);
+            this.btnZgadnij.Location = new System.Drawing.Point(93, 12);
             this.btnZgadnij.Name = "btnZgadnij";
             this.btnZgadnij.Size = new System.Drawing.Size(75, 23);
             this.btnZgadnij.TabIndex = 3;
@@ -79,7 +79,7 @@
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(93, 12);
+            this.btnTest.Location = new System.Drawing.Point(394, 12);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(75, 23);
             this.btnTest.TabIndex = 4;
@@ -89,7 +89,7 @@
             // 
             // btnWyczysc
             // 
-            this.btnWyczysc.Location = new System.Drawing.Point(255, 12);
+            this.btnWyczysc.Location = new System.Drawing.Point(12, 12);
             this.btnWyczysc.Name = "btnWyczysc";
             this.btnWyczysc.Size = new System.Drawing.Size(75, 23);
             this.btnWyczysc.TabIndex = 5;
@@ -101,7 +101,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(828, 341);
+            this.ClientSize = new System.Drawing.Size(555, 341);
             this.Controls.Add(this.btnWyczysc);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.btnZgadnij);
@@ -109,7 +109,7 @@
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.PictureBox);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Rozpoznawanie rysunku";
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).EndInit();
             this.ResumeLayout(false);
 

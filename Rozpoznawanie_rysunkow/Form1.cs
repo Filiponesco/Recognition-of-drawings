@@ -32,29 +32,21 @@ namespace Rozpoznawanie_rysunkow
         public Form1()
         {
             InitializeComponent();
-
+            trainings = new List<OneDraw>();
+            testings = new List<OneDraw>();
             PictureBox.Image = new Bitmap(280, 280);
             g = Graphics.FromImage(PictureBox.Image);
             pioro = new Pen(Color.White, 10);
 
             nrEpok = 0;
-            trainings = new List<OneDraw>();
-            testings = new List<OneDraw>();
             OpenFiles();
             PreparingData(airplanes);
             PreparingData(bananas);
             PreparingData(cars);
             PreparingData(fingers);
 
-            trainings.AddRange(airplanes.Training);
-            trainings.AddRange(bananas.Training);
-            trainings.AddRange(cars.Training);
-            trainings.AddRange(fingers.Training);
-
-            testings.AddRange(airplanes.Testing);
-            testings.AddRange(bananas.Testing);
-            testings.AddRange(cars.Testing);
-            testings.AddRange(fingers.Testing);
+            AddToTrainings();
+            AddToTestings();
 
             nn = new NeuralNetwork(784, 1, 64, 4);
 
@@ -71,6 +63,20 @@ namespace Rozpoznawanie_rysunkow
             bananas = new Kategoria(Label.bananas);
             cars = new Kategoria(Label.cars);
             fingers = new Kategoria(Label.fingers);
+        }
+        private void AddToTrainings()
+        {
+            trainings.AddRange(airplanes.Training);
+            trainings.AddRange(bananas.Training);
+            trainings.AddRange(cars.Training);
+            trainings.AddRange(fingers.Training);
+        }
+        private void AddToTestings()
+        {
+            testings.AddRange(airplanes.Testing);
+            testings.AddRange(bananas.Testing);
+            testings.AddRange(cars.Testing);
+            testings.AddRange(fingers.Testing);
         }
         private Bitmap BytesToBitmap(byte[] data, int inIndex, int height, int width)
         {
@@ -108,6 +114,7 @@ namespace Rozpoznawanie_rysunkow
             Array.Copy(data, index, result, 0, length);
             return result;
         }
+
         private void PreparingData(Kategoria kat)
         {
             for (int i = 0; i < total_data; i++)
@@ -173,7 +180,7 @@ namespace Rozpoznawanie_rysunkow
                     correct++;
             }
             double percent = ((double)correct / (double)testings.Count()) * 100;
-            listBox1.Items.Add(" Dokladnosc nauki: " + percent.ToString() + "%");
+            listBox1.Items.Add("Dokladnosc nauki: " + percent.ToString() + "%");
         }
 
         private void btnNaucz_Click(object sender, EventArgs e)
