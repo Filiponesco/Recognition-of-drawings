@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NeuralNetworkBiblioteka;
@@ -14,12 +15,15 @@ namespace Rozpoznawanie_rysunkow
 {
     public partial class Form1 : Form
     {
+        private Thread th;
         const int res = 784;
-        const int total_data = 1000;
-        Kategoria airplanes;
-        Kategoria bananas;
-        Kategoria cars;
-        Kategoria fingers;
+        const int total_data = 10000; //Gdy zmieniasz muszisz zmienic tez nazwe pliku wejsciowego w klasie Kategoria
+        const int ileKategorii = 12; //Pamietaj o Label i o hidden
+        //Kategoria airplanes;
+        //Kategoria bananas;
+        //Kategoria cars;
+        //Kategoria fingers;
+        List<Kategoria> kategorie;
         List<OneDraw> trainings;
         List<OneDraw> testings;
         NeuralNetwork nn;
@@ -32,6 +36,7 @@ namespace Rozpoznawanie_rysunkow
         public Form1()
         {
             InitializeComponent();
+            kategorie = new List<Kategoria>();
             trainings = new List<OneDraw>();
             testings = new List<OneDraw>();
             PictureBox.Image = new Bitmap(280, 280);
@@ -41,16 +46,28 @@ namespace Rozpoznawanie_rysunkow
             pioro.StartCap = pioro.EndCap = System.Drawing.Drawing2D.LineCap.Round;
 
             nrEpok = 0;
-            OpenFiles();
-            PreparingData(airplanes);
-            PreparingData(bananas);
-            PreparingData(cars);
-            PreparingData(fingers);
+            //OpenFiles();
+            //PreparingData(airplanes);
+            //PreparingData(bananas);
+            //PreparingData(cars);
+            //PreparingData(fingers);
+            Label lbl = Label.airplanes;
+            for(int i = 0; i < ileKategorii; i++)
+            {
+                kategorie.Add(new Kategoria(lbl));
+                lbl++;
+            }
+            foreach(var k in kategorie)
+            {
+                PreparingData(k);
+                AddToTrainings(k);
+                AddToTestings(k);
+            }
 
-            AddToTrainings();
-            AddToTestings();
+            //AddToTrainings();
+            //AddToTestings();
 
-            nn = new NeuralNetwork(784, 1, 64, 4);
+            nn = new NeuralNetwork(784, 1, 256, ileKategorii);
 
             //for(int i = 0; i < 5; i++)
             //{
@@ -59,26 +76,34 @@ namespace Rozpoznawanie_rysunkow
             //    TestingAll();
             //}
         }
-        private void OpenFiles()
+        //private void OpenFiles()
+        //{
+        //    airplanes = new Kategoria(Label.airplanes);
+        //    bananas = new Kategoria(Label.bananas);
+        //    cars = new Kategoria(Label.cars);
+        //    fingers = new Kategoria(Label.fingers);
+        //}
+        //private void AddToTrainings()
+        //{
+        //    trainings.AddRange(airplanes.Training);
+        //    trainings.AddRange(bananas.Training);
+        //    trainings.AddRange(cars.Training);
+        //    trainings.AddRange(fingers.Training);
+        //}
+        //private void AddToTestings()
+        //{
+        //    testings.AddRange(airplanes.Testing);
+        //    testings.AddRange(bananas.Testing);
+        //    testings.AddRange(cars.Testing);
+        //    testings.AddRange(fingers.Testing);
+        //}
+        private void AddToTrainings(Kategoria k)
         {
-            airplanes = new Kategoria(Label.airplanes);
-            bananas = new Kategoria(Label.bananas);
-            cars = new Kategoria(Label.cars);
-            fingers = new Kategoria(Label.fingers);
+            trainings.AddRange(k.Training);
         }
-        private void AddToTrainings()
+        private void AddToTestings(Kategoria k)
         {
-            trainings.AddRange(airplanes.Training);
-            trainings.AddRange(bananas.Training);
-            trainings.AddRange(cars.Training);
-            trainings.AddRange(fingers.Training);
-        }
-        private void AddToTestings()
-        {
-            testings.AddRange(airplanes.Testing);
-            testings.AddRange(bananas.Testing);
-            testings.AddRange(cars.Testing);
-            testings.AddRange(fingers.Testing);
+            testings.AddRange(k.Testing);
         }
         private Bitmap BytesToBitmap(byte[] data, int inIndex, int height, int width)
         {
@@ -157,11 +182,22 @@ namespace Rozpoznawanie_rysunkow
                 //normalizacja danych tu moze byc
 
                 Label name = trainings[i].Lbl;
-                double[] targets = { 0, 0, 0, 0 };
+                double[] targets = new double[ileKategorii];
+                for (int k = 0; k < ileKategorii; k++)
+                    targets[k] = 0;
                 targets[(int)name] = 1;
                 nn.Train(inputs, targets);
+                double wartProcent = ((double)(i + 1) / (double)trainings.Count()) * 100;
+                //Action<int> updateAction = new Action<int>((value) => progressBar.Value = (int)wartProcent);
+                //if (progressBar.InvokeRequired)
+                //    progressBar.Invoke(updateAction, 5);
+                //else
+                //    updateAction(4);
+                this.InvokeIfRequired((value) => progressBar.Value = (int)wartProcent, 10);
             }
-            listBox1.Items.Add("Zakonczono nauczanie epoki: " + nrEpok);
+            this.InvokeIfRequired((value) => listBox1.Items.Add("Zakonczono nauczanie epoki: " + nrEpok), 10);
+            th.Abort();
+            //listBox1.Items.Add("Zakonczono nauczanie epoki: " + nrEpok);
         }
         private void TestingAll()
         {
@@ -187,7 +223,9 @@ namespace Rozpoznawanie_rysunkow
 
         private void btnNaucz_Click(object sender, EventArgs e)
         {
-            TreningEpoki();
+            //TreningEpoki();
+            th = new Thread(TreningEpoki);
+            th.Start();
         }
 
         private void btnZgadnij_Click(object sender, EventArgs e)
@@ -205,7 +243,7 @@ namespace Rozpoznawanie_rysunkow
             Label guessLbl = Label.airplanes;
             guessLbl += pom;
             listBox1.Items.Add("Myślę, że jest to: " + guessLbl);
-            listBox1.Items.Add(String.Format("Guess: [ {0:N5} {1:N5} {2:N5} {3:N5} ]", guess[0], guess[1], guess[2], guess[3]));
+            //listBox1.Items.Add(String.Format("Guess: [ {0:N5} {1:N5} {2:N5} {3:N5} ]", guess[0], guess[1], guess[2], guess[3]));
         }
 
         private void btnTest_Click(object sender, EventArgs e)

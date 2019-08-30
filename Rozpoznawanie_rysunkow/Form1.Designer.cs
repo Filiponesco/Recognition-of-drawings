@@ -34,6 +34,7 @@
             this.btnZgadnij = new System.Windows.Forms.Button();
             this.btnTest = new System.Windows.Forms.Button();
             this.btnWyczysc = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,7 +55,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(311, 41);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(232, 290);
+            this.listBox1.Size = new System.Drawing.Size(232, 264);
             this.listBox1.TabIndex = 1;
             // 
             // btnNaucz
@@ -97,11 +98,19 @@
             this.btnWyczysc.UseVisualStyleBackColor = true;
             this.btnWyczysc.Click += new System.EventHandler(this.btnWyczysc_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(311, 311);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(232, 10);
+            this.progressBar.TabIndex = 7;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(555, 341);
+            this.ClientSize = new System.Drawing.Size(555, 359);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.btnWyczysc);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.btnZgadnij);
@@ -123,6 +132,7 @@
         private System.Windows.Forms.Button btnZgadnij;
         private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.Button btnWyczysc;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 

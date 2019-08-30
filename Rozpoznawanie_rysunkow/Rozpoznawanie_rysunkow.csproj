@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivationFunction.cs" />
+    <Compile Include="ControlExtension.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1,8 +1,8 @@
 size(280, 280);
-int total = 100;
-String name = "airplane";
+int total = 1000;
+String name = "TheEiffelTower";
 String path = "C:\\Users\\fifig\\Documents\\GitHub\\Rozpoznawanie_rysunkow\\Pobrane dane\\";
-byte [] data = loadBytes(path+name+".npy");
+byte [] data = loadBytes(path+"full_numpy_bitmap_"+name+".npy");
 byte [] outData = new byte[total * 784];
 
 int ile = (data.length - 80 ) / 784;

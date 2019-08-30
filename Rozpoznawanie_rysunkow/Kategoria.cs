@@ -33,8 +33,16 @@ namespace Rozpoznawanie_rysunkow
     {
         airplanes,
         bananas,
+        birds,
+        breads,
+        cactuss,
         cars,
-        fingers
+        cats,
+        clocks,
+        doors,
+        faces,
+        fingers,
+        TheEiffelTowers
     }
     class OneDraw
     {
