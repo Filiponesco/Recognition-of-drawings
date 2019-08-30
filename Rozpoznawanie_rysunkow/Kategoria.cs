@@ -20,7 +20,7 @@ namespace Rozpoznawanie_rysunkow
         public Kategoria(Label name)
         {
             Name = name;
-            Data = File.ReadAllBytes(path + Name +"1000.bin");
+            Data = File.ReadAllBytes(path + Name +"10000.bin");
             Training = new List<OneDraw>();
             Testing = new List<OneDraw>();
         }
