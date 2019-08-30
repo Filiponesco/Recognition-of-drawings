@@ -20,31 +20,61 @@ namespace Rozpoznawanie_rysunkow
         Kategoria bananas;
         Kategoria cars;
         Kategoria fingers;
-        int x = 0;
-        int y = 0;
+        List<OneDraw> trainings;
         NeuralNetwork nn;
+
         public Form1()
         {
             InitializeComponent();
+            trainings = new List<OneDraw>();
             OpenFiles();
             PreparingData(airplanes);
-            //PreparingData(bananas);
-            //PreparingData(cars);
-            //PreparingData(fingers);
+            PreparingData(bananas);
+            PreparingData(cars);
+            PreparingData(fingers);
 
             listBox1.Items.Add(airplanes.Informacja());
             listBox1.Items.Add(bananas.Informacja());
             listBox1.Items.Add(cars.Informacja());
             listBox1.Items.Add(fingers.Informacja());
 
-            nn = new NeuralNetwork(784, 1, 64, 3);
+            trainings.AddRange(airplanes.Training);
+            trainings.AddRange(bananas.Training);
+            trainings.AddRange(cars.Training);
+            trainings.AddRange(fingers.Training);
+
+            listBox1.Items.Add("wszystkie treningi " + trainings.Count());
+
+            Shuffle(trainings);
+
+            nn = new NeuralNetwork(784, 1, 64, 4);
+
+            //Trening jednej epoki
+            for (int i = 0; i < trainings.Count; i++)
+            {
+                OneDraw data = trainings[i];
+                listBox1.Items.Add("Size jednej bitmapy:  " + data.Bmp.Size);
+                listBox1.Items.Add("bajty jednego rysunku:  " + data.BrightPixels.Count());
+                double[] inputs = data.BrightPixels;
+                //normalizacja danych
+                for (int k = 0; k < inputs.Count(); k++)
+                {
+                    inputs[k] /= (byte)255.0;
+                }
+                Label name = trainings[i].Lbl;
+                double[] targets = { 0, 0, 0, 0 };
+                targets[(int)name] = 1;
+                listBox1.Items.Add("Label: " + name + "Targets: [" + targets[0] + " " + targets[1] + " " + targets[2] + " " + targets[3] + " ]");
+
+                nn.Train(inputs, targets);
+            }
         }
         private void OpenFiles()
         {
-            airplanes = new Kategoria("airplanes");
-            bananas = new Kategoria("bananas");
-            cars = new Kategoria("cars");
-            fingers = new Kategoria("fingers");
+            airplanes = new Kategoria(Label.airplanes);
+            bananas = new Kategoria(Label.bananas);
+            cars = new Kategoria(Label.cars);
+            fingers = new Kategoria(Label.fingers);
         }
         private Bitmap BytesToBitmap(byte[] data, int inIndex, int height, int width)
         {
@@ -83,17 +113,29 @@ namespace Rozpoznawanie_rysunkow
         }
         private void PreparingData(Kategoria kat)
         {
-            
             for (int i = 0; i < total_data; i++)
             {
                 if (i < total_data * 0.8)
                 {
-                    kat.Training.Add(BytesToBitmap(kat.Data, i, 28, 28));
+                    kat.Training.Add(new OneDraw(kat.Name, BytesToBitmap(kat.Data, i, 28, 28)));
                 }
                 else
                 {
-                    kat.Testing.Add(BytesToBitmap(kat.Data, i, 28, 28));
+                    kat.Testing.Add(new OneDraw(kat.Name, BytesToBitmap(kat.Data, i, 28, 28)));
                 }
+            }
+        }
+        private void Shuffle(List<OneDraw> list)
+        {
+            Random rng = new Random();
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                OneDraw value = list[k];
+                list[k] = list[n];
+                list[n] = value;
             }
         }
     }
