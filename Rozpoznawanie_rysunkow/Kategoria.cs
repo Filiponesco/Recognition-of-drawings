@@ -45,11 +45,13 @@ namespace Rozpoznawanie_rysunkow
             get
             {
                 double[] p = new double[Bmp.Height * Bmp.Width];
+                int index = 0;
                 for (int i = 0; i < Bmp.Height; i++)
                 {
                     for(int k = 0; k < Bmp.Width; k++)
                     {
-                        p[i] = Bmp.GetPixel(i, k).GetBrightness();
+                        p[index] = Bmp.GetPixel(i, k).GetBrightness();
+                        index++;
                     }
                 }
                 return p;

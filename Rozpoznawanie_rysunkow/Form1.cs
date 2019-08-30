@@ -21,52 +21,41 @@ namespace Rozpoznawanie_rysunkow
         Kategoria cars;
         Kategoria fingers;
         List<OneDraw> trainings;
+        List<OneDraw> testings;
         NeuralNetwork nn;
 
         public Form1()
         {
             InitializeComponent();
             trainings = new List<OneDraw>();
+            testings = new List<OneDraw>();
             OpenFiles();
             PreparingData(airplanes);
             PreparingData(bananas);
             PreparingData(cars);
             PreparingData(fingers);
 
-            listBox1.Items.Add(airplanes.Informacja());
-            listBox1.Items.Add(bananas.Informacja());
-            listBox1.Items.Add(cars.Informacja());
-            listBox1.Items.Add(fingers.Informacja());
-
             trainings.AddRange(airplanes.Training);
             trainings.AddRange(bananas.Training);
             trainings.AddRange(cars.Training);
             trainings.AddRange(fingers.Training);
 
+            testings.AddRange(airplanes.Testing);
+            testings.AddRange(bananas.Testing);
+            testings.AddRange(cars.Testing);
+            testings.AddRange(fingers.Testing);
+
+            listBox1.Items.Add("airplanes trening " + airplanes.Training.Count());
             listBox1.Items.Add("wszystkie treningi " + trainings.Count());
 
-            Shuffle(trainings);
-
             nn = new NeuralNetwork(784, 1, 64, 4);
+           // nn = new NeuralNetwork(784, 64, 4);
 
-            //Trening jednej epoki
-            for (int i = 0; i < trainings.Count; i++)
+            for(int i = 0; i < 5; i++)
             {
-                OneDraw data = trainings[i];
-                listBox1.Items.Add("Size jednej bitmapy:  " + data.Bmp.Size);
-                listBox1.Items.Add("bajty jednego rysunku:  " + data.BrightPixels.Count());
-                double[] inputs = data.BrightPixels;
-                //normalizacja danych
-                for (int k = 0; k < inputs.Count(); k++)
-                {
-                    inputs[k] /= (byte)255.0;
-                }
-                Label name = trainings[i].Lbl;
-                double[] targets = { 0, 0, 0, 0 };
-                targets[(int)name] = 1;
-                listBox1.Items.Add("Label: " + name + "Targets: [" + targets[0] + " " + targets[1] + " " + targets[2] + " " + targets[3] + " ]");
-
-                nn.Train(inputs, targets);
+                TreningEpoki();
+                listBox1.Items.Add("Zakonczono nauczanie epoki: " + i+1);
+                TestingAll();
             }
         }
         private void OpenFiles()
@@ -137,6 +126,52 @@ namespace Rozpoznawanie_rysunkow
                 list[k] = list[n];
                 list[n] = value;
             }
+        }
+        private void TreningEpoki()
+        {
+            Shuffle(trainings);
+            //Trening jednej epoki
+            for (int i = 0; i < trainings.Count; i++)
+            {
+                OneDraw data = trainings[i];
+                //listBox1.Items.Add("Size jednej bitmapy:  " + data.Bmp.Size);
+                //listBox1.Items.Add("bajty jednego rysunku:  " + data.BrightPixels.Count());
+                double[] inputs = data.BrightPixels;
+                //normalizacja danych
+                //for (int k = 0; k < inputs.Count(); k++)
+                //{
+                //    inputs[k] /= 255;
+                //}
+                Label name = trainings[i].Lbl;
+                double[] targets = { 0, 0, 0, 0 };
+                targets[(int)name] = 1;
+                //listBox1.Items.Add("Label: " + name + "Targets: [" + targets[0] + " " + targets[1] + " " + targets[2] + " " + targets[3] + " ]");
+
+                nn.Train(inputs, targets);
+            }
+        }
+        private void TestingAll()
+        {
+            Shuffle(testings);
+            int correct = 0;
+            //Trening jednej epoki
+            for (int i = 0; i < testings.Count; i++)
+            {
+                OneDraw data = testings[i];
+                double[] inputs = data.BrightPixels;
+                Label name = testings[i].Lbl;
+                double[] guess = nn.Guess(inputs);
+                double maxValue = guess.Max();
+                int pom = guess.ToList().IndexOf(maxValue);
+                Label guessLbl = Label.airplanes;
+                guessLbl += pom;
+                listBox1.Items.Add("Label: " + name + "Guess: " + guessLbl);
+                //listBox1.Items.Add("Guess: [" + guess[0] + " " + guess[1] + " " + guess[2] + " " + guess[3] + " ]");
+                if ((int)guessLbl == (int)data.Lbl)
+                    correct++;
+            }
+            double percent = ((double)correct / (double)testings.Count()) * 100;
+            listBox1.Items.Add(" Dokladnosc nauki: " + percent.ToString() + "%");
         }
     }
 }
