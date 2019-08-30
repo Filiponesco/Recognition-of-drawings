@@ -62,6 +62,10 @@ namespace Rozpoznawanie_rysunkow
             Lbl = lbl;
             Bmp = bmp;
         }
+        public OneDraw(Bitmap bmp)
+        {
+            Bmp = bmp;
+        }
     }
 
 }

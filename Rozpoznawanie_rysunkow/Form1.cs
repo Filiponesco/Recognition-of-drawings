@@ -35,7 +35,7 @@ namespace Rozpoznawanie_rysunkow
 
             PictureBox.Image = new Bitmap(280, 280);
             g = Graphics.FromImage(PictureBox.Image);
-            pioro = new Pen(Color.Black, 10);
+            pioro = new Pen(Color.White, 10);
 
             nrEpok = 0;
             trainings = new List<OneDraw>();
@@ -56,11 +56,7 @@ namespace Rozpoznawanie_rysunkow
             testings.AddRange(cars.Testing);
             testings.AddRange(fingers.Testing);
 
-            //listBox1.Items.Add("airplanes trening " + airplanes.Training.Count());
-            //listBox1.Items.Add("wszystkie treningi " + trainings.Count());
-
             nn = new NeuralNetwork(784, 1, 64, 4);
-           // nn = new NeuralNetwork(784, 64, 4);
 
             //for(int i = 0; i < 5; i++)
             //{
@@ -94,7 +90,7 @@ namespace Rozpoznawanie_rysunkow
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         {
-            //rysowanie po PictureBox
+            ////rysowanie po PictureBox
             //int total = 100;
             //int x = 0; int y = 0;
             //for (int n = 0; n < total; n++)
@@ -147,19 +143,13 @@ namespace Rozpoznawanie_rysunkow
             for (int i = 0; i < trainings.Count; i++)
             {
                 OneDraw data = trainings[i];
-                //listBox1.Items.Add("Size jednej bitmapy:  " + data.Bmp.Size);
-                //listBox1.Items.Add("bajty jednego rysunku:  " + data.BrightPixels.Count());
                 double[] inputs = data.BrightPixels;
-                //normalizacja danych
-                //for (int k = 0; k < inputs.Count(); k++)
-                //{
-                //    inputs[k] /= 255;
-                //}
+
+                //normalizacja danych tu moze byc
+
                 Label name = trainings[i].Lbl;
                 double[] targets = { 0, 0, 0, 0 };
                 targets[(int)name] = 1;
-                //listBox1.Items.Add("Label: " + name + "Targets: [" + targets[0] + " " + targets[1] + " " + targets[2] + " " + targets[3] + " ]");
-
                 nn.Train(inputs, targets);
             }
             listBox1.Items.Add("Zakonczono nauczanie epoki: " + nrEpok);
@@ -179,8 +169,6 @@ namespace Rozpoznawanie_rysunkow
                 int pom = guess.ToList().IndexOf(maxValue);
                 Label guessLbl = Label.airplanes;
                 guessLbl += pom;
-                //listBox1.Items.Add("Label: " + name + "Guess: " + guessLbl);
-                //listBox1.Items.Add("Guess: [" + guess[0] + " " + guess[1] + " " + guess[2] + " " + guess[3] + " ]");
                 if ((int)guessLbl == (int)data.Lbl)
                     correct++;
             }
@@ -195,7 +183,18 @@ namespace Rozpoznawanie_rysunkow
 
         private void btnZgadnij_Click(object sender, EventArgs e)
         {
+            Bitmap bmp = (Bitmap) PictureBox.Image;
+            Bitmap resized = new Bitmap(bmp, new Size(bmp.Width / 10, bmp.Height / 10));
+            OneDraw rysunek = new OneDraw(resized);
+            double[] rysunekInputs = rysunek.BrightPixels;
 
+            double[] guess = nn.Guess(rysunekInputs);
+            double maxValue = guess.Max();
+            int pom = guess.ToList().IndexOf(maxValue);
+            Label guessLbl = Label.airplanes;
+            guessLbl += pom;
+            listBox1.Items.Add("Myślę, że jest to: " + guessLbl);
+            listBox1.Items.Add(String.Format("Guess: [ {0:N5} {1:N5} {2:N5} {3:N5} ]", guess[0], guess[1], guess[2], guess[3]));
         }
 
         private void btnTest_Click(object sender, EventArgs e)
@@ -222,7 +221,7 @@ namespace Rozpoznawanie_rysunkow
 
         private void btnWyczysc_Click(object sender, EventArgs e)
         {
-            g.Clear(Color.White);
+            g.Clear(Color.Black);
             PictureBox.Refresh();
         }
     }

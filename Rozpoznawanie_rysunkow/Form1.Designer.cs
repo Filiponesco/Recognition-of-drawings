@@ -39,7 +39,7 @@
             // 
             // PictureBox
             // 
-            this.PictureBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.PictureBox.BackColor = System.Drawing.Color.Black;
             this.PictureBox.Location = new System.Drawing.Point(12, 41);
             this.PictureBox.Name = "PictureBox";
             this.PictureBox.Size = new System.Drawing.Size(280, 280);
@@ -54,7 +54,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(334, 45);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(260, 277);
+            this.listBox1.Size = new System.Drawing.Size(482, 277);
             this.listBox1.TabIndex = 1;
             // 
             // btnNaucz
@@ -101,7 +101,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(610, 341);
+            this.ClientSize = new System.Drawing.Size(828, 341);
             this.Controls.Add(this.btnWyczysc);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.btnZgadnij);
