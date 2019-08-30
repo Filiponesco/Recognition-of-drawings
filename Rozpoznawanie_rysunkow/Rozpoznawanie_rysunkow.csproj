@@ -57,8 +57,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Kategoria.cs" />
-    <Compile Include="Matrix.cs" />
-    <Compile Include="NeuralNetwork2.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

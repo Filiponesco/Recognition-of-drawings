@@ -36,7 +36,9 @@ namespace Rozpoznawanie_rysunkow
             testings = new List<OneDraw>();
             PictureBox.Image = new Bitmap(280, 280);
             g = Graphics.FromImage(PictureBox.Image);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             pioro = new Pen(Color.White, 10);
+            pioro.StartCap = pioro.EndCap = System.Drawing.Drawing2D.LineCap.Round;
 
             nrEpok = 0;
             OpenFiles();
@@ -193,6 +195,8 @@ namespace Rozpoznawanie_rysunkow
             Bitmap bmp = (Bitmap) PictureBox.Image;
             Bitmap resized = new Bitmap(bmp, new Size(bmp.Width / 10, bmp.Height / 10));
             OneDraw rysunek = new OneDraw(resized);
+            //g.DrawImage(resized, 0, 0);
+            //PictureBox.Refresh();
             double[] rysunekInputs = rysunek.BrightPixels;
 
             double[] guess = nn.Guess(rysunekInputs);
