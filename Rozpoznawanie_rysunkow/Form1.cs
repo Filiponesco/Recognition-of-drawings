@@ -23,10 +23,21 @@ namespace Rozpoznawanie_rysunkow
         List<OneDraw> trainings;
         List<OneDraw> testings;
         NeuralNetwork nn;
+        int nrEpok;
+
+        private Graphics g;
+        private Point p = Point.Empty;
+        private Pen pioro;
 
         public Form1()
         {
             InitializeComponent();
+
+            PictureBox.Image = new Bitmap(280, 280);
+            g = Graphics.FromImage(PictureBox.Image);
+            pioro = new Pen(Color.Black, 10);
+
+            nrEpok = 0;
             trainings = new List<OneDraw>();
             testings = new List<OneDraw>();
             OpenFiles();
@@ -45,18 +56,18 @@ namespace Rozpoznawanie_rysunkow
             testings.AddRange(cars.Testing);
             testings.AddRange(fingers.Testing);
 
-            listBox1.Items.Add("airplanes trening " + airplanes.Training.Count());
-            listBox1.Items.Add("wszystkie treningi " + trainings.Count());
+            //listBox1.Items.Add("airplanes trening " + airplanes.Training.Count());
+            //listBox1.Items.Add("wszystkie treningi " + trainings.Count());
 
             nn = new NeuralNetwork(784, 1, 64, 4);
            // nn = new NeuralNetwork(784, 64, 4);
 
-            for(int i = 0; i < 5; i++)
-            {
-                TreningEpoki();
-                listBox1.Items.Add("Zakonczono nauczanie epoki: " + i+1);
-                TestingAll();
-            }
+            //for(int i = 0; i < 5; i++)
+            //{
+            //    TreningEpoki();
+            //    listBox1.Items.Add("Zakonczono nauczanie epoki: " + i+1);
+            //    TestingAll();
+            //}
         }
         private void OpenFiles()
         {
@@ -83,16 +94,17 @@ namespace Rozpoznawanie_rysunkow
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         {
-            int total = 100;
-            int x = 0; int y = 0;
-            for (int n = 0; n < total; n++)
-            {
-                Bitmap img = BytesToBitmap(airplanes.Data, n, 28, 28);
-                x = (n % 10) * 28;
-                y = (n / 10) * 28;
-                Graphics g = e.Graphics;
-                e.Graphics.DrawImage(img, x, y);
-            }
+            //rysowanie po PictureBox
+            //int total = 100;
+            //int x = 0; int y = 0;
+            //for (int n = 0; n < total; n++)
+            //{
+            //    Bitmap img = BytesToBitmap(airplanes.Data, n, 28, 28);
+            //    x = (n % 10) * 28;
+            //    y = (n / 10) * 28;
+            //    Graphics g = e.Graphics;
+            //    e.Graphics.DrawImage(img, x, y);
+            //}
         }
         private byte[] SubArray(byte[] data, int index, int length)
         {
@@ -129,6 +141,7 @@ namespace Rozpoznawanie_rysunkow
         }
         private void TreningEpoki()
         {
+            nrEpok++;
             Shuffle(trainings);
             //Trening jednej epoki
             for (int i = 0; i < trainings.Count; i++)
@@ -149,6 +162,7 @@ namespace Rozpoznawanie_rysunkow
 
                 nn.Train(inputs, targets);
             }
+            listBox1.Items.Add("Zakonczono nauczanie epoki: " + nrEpok);
         }
         private void TestingAll()
         {
@@ -165,13 +179,51 @@ namespace Rozpoznawanie_rysunkow
                 int pom = guess.ToList().IndexOf(maxValue);
                 Label guessLbl = Label.airplanes;
                 guessLbl += pom;
-                listBox1.Items.Add("Label: " + name + "Guess: " + guessLbl);
+                //listBox1.Items.Add("Label: " + name + "Guess: " + guessLbl);
                 //listBox1.Items.Add("Guess: [" + guess[0] + " " + guess[1] + " " + guess[2] + " " + guess[3] + " ]");
                 if ((int)guessLbl == (int)data.Lbl)
                     correct++;
             }
             double percent = ((double)correct / (double)testings.Count()) * 100;
             listBox1.Items.Add(" Dokladnosc nauki: " + percent.ToString() + "%");
+        }
+
+        private void btnNaucz_Click(object sender, EventArgs e)
+        {
+            TreningEpoki();
+        }
+
+        private void btnZgadnij_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            TestingAll();
+        }
+
+        private void PictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                p = e.Location;
+        }
+
+        private void PictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                g.DrawLine(pioro, p, e.Location);
+                p = e.Location;
+
+                PictureBox.Refresh();
+            }
+        }
+
+        private void btnWyczysc_Click(object sender, EventArgs e)
+        {
+            g.Clear(Color.White);
+            PictureBox.Refresh();
         }
     }
 }
