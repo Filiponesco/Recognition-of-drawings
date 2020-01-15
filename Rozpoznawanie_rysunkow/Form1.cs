@@ -17,12 +17,9 @@ namespace Rozpoznawanie_rysunkow
     {
         private Thread th;
         const int res = 784;
-        const int total_data = 10000; //Gdy zmieniasz muszisz zmienic tez nazwe pliku wejsciowego w klasie Kategoria
-        const int ileKategorii = 12; //Pamietaj o Label i o hidden
-        //Kategoria airplanes;
-        //Kategoria bananas;
-        //Kategoria cars;
-        //Kategoria fingers;
+        const int total_data = 1000; //Gdy zmieniasz muszisz zmienic tez nazwe pliku wejsciowego w klasie Kategoria
+        const int ileKategorii = 4; //Pamietaj o Label i o hidden
+
         List<Kategoria> kategorie;
         List<OneDraw> trainings;
         List<OneDraw> testings;
@@ -46,13 +43,9 @@ namespace Rozpoznawanie_rysunkow
             pioro.StartCap = pioro.EndCap = System.Drawing.Drawing2D.LineCap.Round;
 
             nrEpok = 0;
-            //OpenFiles();
-            //PreparingData(airplanes);
-            //PreparingData(bananas);
-            //PreparingData(cars);
-            //PreparingData(fingers);
-            Label lbl = Label.airplanes;
-            for(int i = 0; i < ileKategorii; i++)
+
+            Label lbl = 0;
+            for (int i = 0; i < ileKategorii; i++)
             {
                 kategorie.Add(new Kategoria(lbl));
                 lbl++;
@@ -67,36 +60,9 @@ namespace Rozpoznawanie_rysunkow
             //AddToTrainings();
             //AddToTestings();
 
-            nn = new NeuralNetwork(784, 1, 256, ileKategorii);
+            nn = new NeuralNetwork(784, 1, 64, ileKategorii);
 
-            //for(int i = 0; i < 5; i++)
-            //{
-            //    TreningEpoki();
-            //    listBox1.Items.Add("Zakonczono nauczanie epoki: " + i+1);
-            //    TestingAll();
-            //}
         }
-        //private void OpenFiles()
-        //{
-        //    airplanes = new Kategoria(Label.airplanes);
-        //    bananas = new Kategoria(Label.bananas);
-        //    cars = new Kategoria(Label.cars);
-        //    fingers = new Kategoria(Label.fingers);
-        //}
-        //private void AddToTrainings()
-        //{
-        //    trainings.AddRange(airplanes.Training);
-        //    trainings.AddRange(bananas.Training);
-        //    trainings.AddRange(cars.Training);
-        //    trainings.AddRange(fingers.Training);
-        //}
-        //private void AddToTestings()
-        //{
-        //    testings.AddRange(airplanes.Testing);
-        //    testings.AddRange(bananas.Testing);
-        //    testings.AddRange(cars.Testing);
-        //    testings.AddRange(fingers.Testing);
-        //}
         private void AddToTrainings(Kategoria k)
         {
             trainings.AddRange(k.Training);
@@ -124,16 +90,7 @@ namespace Rozpoznawanie_rysunkow
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         {
             ////rysowanie po PictureBox
-            //int total = 100;
-            //int x = 0; int y = 0;
-            //for (int n = 0; n < total; n++)
-            //{
-            //    Bitmap img = BytesToBitmap(airplanes.Data, n, 28, 28);
-            //    x = (n % 10) * 28;
-            //    y = (n / 10) * 28;
-            //    Graphics g = e.Graphics;
-            //    e.Graphics.DrawImage(img, x, y);
-            //}
+
         }
         private byte[] SubArray(byte[] data, int index, int length)
         {
@@ -188,16 +145,11 @@ namespace Rozpoznawanie_rysunkow
                 targets[(int)name] = 1;
                 nn.Train(inputs, targets);
                 double wartProcent = ((double)(i + 1) / (double)trainings.Count()) * 100;
-                //Action<int> updateAction = new Action<int>((value) => progressBar.Value = (int)wartProcent);
-                //if (progressBar.InvokeRequired)
-                //    progressBar.Invoke(updateAction, 5);
-                //else
-                //    updateAction(4);
+
                 this.InvokeIfRequired((value) => progressBar.Value = (int)wartProcent, 10);
             }
             this.InvokeIfRequired((value) => listBox1.Items.Add("Zakonczono nauczanie epoki: " + nrEpok), 10);
             th.Abort();
-            //listBox1.Items.Add("Zakonczono nauczanie epoki: " + nrEpok);
         }
         private void TestingAll()
         {
@@ -212,7 +164,7 @@ namespace Rozpoznawanie_rysunkow
                 double[] guess = nn.Guess(inputs);
                 double maxValue = guess.Max();
                 int pom = guess.ToList().IndexOf(maxValue);
-                Label guessLbl = Label.airplanes;
+                Label guessLbl = 0;
                 guessLbl += pom;
                 if ((int)guessLbl == (int)data.Lbl)
                     correct++;
@@ -233,17 +185,16 @@ namespace Rozpoznawanie_rysunkow
             Bitmap bmp = (Bitmap) PictureBox.Image;
             Bitmap resized = new Bitmap(bmp, new Size(bmp.Width / 10, bmp.Height / 10));
             OneDraw rysunek = new OneDraw(resized);
-            //g.DrawImage(resized, 0, 0);
-            //PictureBox.Refresh();
+
             double[] rysunekInputs = rysunek.BrightPixels;
 
             double[] guess = nn.Guess(rysunekInputs);
             double maxValue = guess.Max();
             int pom = guess.ToList().IndexOf(maxValue);
-            Label guessLbl = Label.airplanes;
+            //Label guessLbl = Label.airplanes;
+            Label guessLbl = 0;
             guessLbl += pom;
             listBox1.Items.Add("Myślę, że jest to: " + guessLbl);
-            //listBox1.Items.Add(String.Format("Guess: [ {0:N5} {1:N5} {2:N5} {3:N5} ]", guess[0], guess[1], guess[2], guess[3]));
         }
 
         private void btnTest_Click(object sender, EventArgs e)

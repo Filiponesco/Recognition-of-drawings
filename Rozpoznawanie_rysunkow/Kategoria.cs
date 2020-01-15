@@ -20,7 +20,7 @@ namespace Rozpoznawanie_rysunkow
         public Kategoria(Label name)
         {
             Name = name;
-            Data = File.ReadAllBytes(path + Name +"10000.bin");
+            Data = File.ReadAllBytes(path + Name +"1000.bin"); //have to change in Form1.cs 20 line
             Training = new List<OneDraw>();
             Testing = new List<OneDraw>();
         }
@@ -29,20 +29,20 @@ namespace Rozpoznawanie_rysunkow
             return Name+" Length training: " + Training.Count() + " Length testing: " + Testing.Count();
         }
     }
-    public enum Label
+    public enum Label //gdy zmieniasz zmien 21 wiersz Form1.cs
     {
         airplanes,
         bananas,
-        birds,
-        breads,
-        cactuss,
+        //birds,
+        //breads,
+        //cactuss,
         cars,
-        cats,
-        clocks,
-        doors,
-        faces,
-        fingers,
-        TheEiffelTowers
+        //cats,
+        //clocks,
+        //doors,
+        //faces,
+        fingers//,
+        //TheEiffelTowers
     }
     class OneDraw
     {
